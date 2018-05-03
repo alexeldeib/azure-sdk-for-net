@@ -433,5 +433,69 @@ namespace Microsoft.Azure.ApplicationInsights
                 }
             }
 
+            /// <summary>
+            /// Execute an Analytics query
+            /// </summary>
+            /// <remarks>
+            /// Executes an Analytics query for data.
+            /// [Here](https://dev.applicationinsights.io/documentation/Using-the-API/Query)
+            /// is an example for using POST with an Analytics query.
+            /// </remarks>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='query'>
+            /// The query to execute.
+            /// </param>
+            /// <param name='timespan'>
+            /// Optional. The timespan over which to query data. This is an ISO8601 time
+            /// period value.  This timespan is applied in addition to any that are
+            /// specified in the query expression.
+            /// </param>
+            /// <param name='timespan1'>
+            /// Optional. The timespan over which to query data. This is an ISO8601 time
+            /// period value.  This timespan is applied in addition to any that are
+            /// specified in the query expression.
+            /// </param>
+            public static QueryResults Query(this IApplicationInsightsDataClient operations, string query, string timespan = default(string), string timespan1 = default(string))
+            {
+                return operations.QueryAsync(query, timespan, timespan1).GetAwaiter().GetResult();
+            }
+
+            /// <summary>
+            /// Execute an Analytics query
+            /// </summary>
+            /// <remarks>
+            /// Executes an Analytics query for data.
+            /// [Here](https://dev.applicationinsights.io/documentation/Using-the-API/Query)
+            /// is an example for using POST with an Analytics query.
+            /// </remarks>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='query'>
+            /// The query to execute.
+            /// </param>
+            /// <param name='timespan'>
+            /// Optional. The timespan over which to query data. This is an ISO8601 time
+            /// period value.  This timespan is applied in addition to any that are
+            /// specified in the query expression.
+            /// </param>
+            /// <param name='timespan1'>
+            /// Optional. The timespan over which to query data. This is an ISO8601 time
+            /// period value.  This timespan is applied in addition to any that are
+            /// specified in the query expression.
+            /// </param>
+            /// <param name='cancellationToken'>
+            /// The cancellation token.
+            /// </param>
+            public static async Task<QueryResults> QueryAsync(this IApplicationInsightsDataClient operations, string query, string timespan = default(string), string timespan1 = default(string), CancellationToken cancellationToken = default(CancellationToken))
+            {
+                using (var _result = await operations.QueryWithHttpMessagesAsync(query, timespan, timespan1, null, cancellationToken).ConfigureAwait(false))
+                {
+                    return _result.Body;
+                }
+            }
+
     }
 }

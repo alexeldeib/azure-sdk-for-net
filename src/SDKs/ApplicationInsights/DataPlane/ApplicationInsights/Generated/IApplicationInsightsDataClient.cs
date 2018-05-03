@@ -248,5 +248,34 @@ namespace Microsoft.Azure.ApplicationInsights
         /// </param>
         Task<HttpOperationResponse<object>> GetEventsMetadataODataWithHttpMessagesAsync(Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
+        /// <summary>
+        /// Execute an Analytics query
+        /// </summary>
+        /// <remarks>
+        /// Executes an Analytics query for data.
+        /// [Here](https://dev.applicationinsights.io/documentation/Using-the-API/Query)
+        /// is an example for using POST with an Analytics query.
+        /// </remarks>
+        /// <param name='query'>
+        /// The query to execute.
+        /// </param>
+        /// <param name='timespan'>
+        /// Optional. The timespan over which to query data. This is an ISO8601
+        /// time period value.  This timespan is applied in addition to any
+        /// that are specified in the query expression.
+        /// </param>
+        /// <param name='timespan1'>
+        /// Optional. The timespan over which to query data. This is an ISO8601
+        /// time period value.  This timespan is applied in addition to any
+        /// that are specified in the query expression.
+        /// </param>
+        /// <param name='customHeaders'>
+        /// The headers that will be added to request.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        Task<HttpOperationResponse<QueryResults>> QueryWithHttpMessagesAsync(string query, string timespan = default(string), string timespan1 = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+
     }
 }
