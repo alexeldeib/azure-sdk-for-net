@@ -7,8 +7,6 @@
 namespace Microsoft.Azure.OperationalInsights
 {
     using Models;
-    using System.Collections;
-    using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -36,12 +34,9 @@ namespace Microsoft.Azure.OperationalInsights
             /// period value.  This timespan is applied in addition to any that are
             /// specified in the query expression.
             /// </param>
-            /// <param name='workspaces'>
-            /// A list of workspaces that are included in the query.
-            /// </param>
-            public static QueryResults Query(this IOperationalInsightsDataClient operations, string query, System.TimeSpan? timespan = default(System.TimeSpan?), IList<string> workspaces = default(IList<string>))
+            public static QueryResults Query(this IOperationalInsightsDataClient operations, string query, string timespan = default(string))
             {
-                return operations.QueryAsync(query, timespan, workspaces).GetAwaiter().GetResult();
+                return operations.QueryAsync(query, timespan).GetAwaiter().GetResult();
             }
 
             /// <summary>
@@ -63,15 +58,12 @@ namespace Microsoft.Azure.OperationalInsights
             /// period value.  This timespan is applied in addition to any that are
             /// specified in the query expression.
             /// </param>
-            /// <param name='workspaces'>
-            /// A list of workspaces that are included in the query.
-            /// </param>
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
-            public static async Task<QueryResults> QueryAsync(this IOperationalInsightsDataClient operations, string query, System.TimeSpan? timespan = default(System.TimeSpan?), IList<string> workspaces = default(IList<string>), CancellationToken cancellationToken = default(CancellationToken))
+            public static async Task<QueryResults> QueryAsync(this IOperationalInsightsDataClient operations, string query, string timespan = default(string), CancellationToken cancellationToken = default(CancellationToken))
             {
-                using (var _result = await operations.QueryWithHttpMessagesAsync(query, timespan, workspaces, null, cancellationToken).ConfigureAwait(false))
+                using (var _result = await operations.QueryWithHttpMessagesAsync(query, timespan, null, cancellationToken).ConfigureAwait(false))
                 {
                     return _result.Body;
                 }

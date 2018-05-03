@@ -293,9 +293,6 @@ namespace Microsoft.Azure.OperationalInsights
         /// period value.  This timespan is applied in addition to any that are
         /// specified in the query expression.
         /// </param>
-        /// <param name='workspaces'>
-        /// A list of workspaces that are included in the query.
-        /// </param>
         /// <param name='customHeaders'>
         /// Headers that will be added to request.
         /// </param>
@@ -317,7 +314,7 @@ namespace Microsoft.Azure.OperationalInsights
         /// <return>
         /// A response object containing the response body and response headers.
         /// </return>
-        public async Task<HttpOperationResponse<QueryResults>> QueryWithHttpMessagesAsync(string query, System.TimeSpan? timespan = default(System.TimeSpan?), IList<string> workspaces = default(IList<string>), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<HttpOperationResponse<QueryResults>> QueryWithHttpMessagesAsync(string query, string timespan = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (WorkspaceId == null)
             {
@@ -328,11 +325,10 @@ namespace Microsoft.Azure.OperationalInsights
                 throw new ValidationException(ValidationRules.CannotBeNull, "query");
             }
             QueryBody body = new QueryBody();
-            if (query != null || timespan != null || workspaces != null)
+            if (query != null || timespan != null)
             {
                 body.Query = query;
                 body.Timespan = timespan;
-                body.Workspaces = workspaces;
             }
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
