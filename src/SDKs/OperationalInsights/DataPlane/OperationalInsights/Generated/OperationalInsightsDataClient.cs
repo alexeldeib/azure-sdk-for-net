@@ -38,11 +38,6 @@ namespace Microsoft.Azure.OperationalInsights
         public JsonSerializerSettings DeserializationSettings { get; private set; }
 
         /// <summary>
-        /// Comma separated workspace IDs to include in cross-workspace queries.
-        /// </summary>
-        public string Workspaces { get; set; }
-
-        /// <summary>
         /// Subscription credentials which uniquely identify client subscription.
         /// </summary>
         public ServiceClientCredentials Credentials { get; private set; }
@@ -249,7 +244,6 @@ namespace Microsoft.Azure.OperationalInsights
         private void Initialize()
         {
             BaseUri = new System.Uri("https://api.loganalytics.io/v1");
-            Workspaces = "";
             SerializationSettings = new JsonSerializerSettings
             {
                 Formatting = Newtonsoft.Json.Formatting.Indented,

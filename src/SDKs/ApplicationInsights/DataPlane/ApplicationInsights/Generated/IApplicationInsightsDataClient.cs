@@ -39,11 +39,6 @@ namespace Microsoft.Azure.ApplicationInsights
         JsonSerializerSettings DeserializationSettings { get; }
 
         /// <summary>
-        /// Application IDs to include in cross-application queries.
-        /// </summary>
-        IList<string> Applications { get; set; }
-
-        /// <summary>
         /// Subscription credentials which uniquely identify client
         /// subscription.
         /// </summary>

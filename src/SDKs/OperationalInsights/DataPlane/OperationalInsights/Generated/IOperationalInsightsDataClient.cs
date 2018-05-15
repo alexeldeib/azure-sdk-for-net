@@ -35,12 +35,6 @@ namespace Microsoft.Azure.OperationalInsights
         JsonSerializerSettings DeserializationSettings { get; }
 
         /// <summary>
-        /// Comma separated workspace IDs to include in cross-workspace
-        /// queries.
-        /// </summary>
-        string Workspaces { get; set; }
-
-        /// <summary>
         /// Subscription credentials which uniquely identify client
         /// subscription.
         /// </summary>
