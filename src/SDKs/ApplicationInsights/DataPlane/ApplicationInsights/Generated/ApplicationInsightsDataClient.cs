@@ -42,6 +42,11 @@ namespace Microsoft.Azure.ApplicationInsights
         public JsonSerializerSettings DeserializationSettings { get; private set; }
 
         /// <summary>
+        /// Application IDs to include in cross-application queries.
+        /// </summary>
+        public IList<string> Applications { get; set; }
+
+        /// <summary>
         /// Subscription credentials which uniquely identify client subscription.
         /// </summary>
         public ServiceClientCredentials Credentials { get; private set; }
@@ -1321,13 +1326,8 @@ namespace Microsoft.Azure.ApplicationInsights
         /// period value.  This timespan is applied in addition to any that are
         /// specified in the query expression.
         /// </param>
-        /// <param name='timespan1'>
-        /// Optional. The timespan over which to query data. This is an ISO8601 time
-        /// period value.  This timespan is applied in addition to any that are
-        /// specified in the query expression.
-        /// </param>
         /// <param name='applications'>
-        /// A list of applications that are included in the query.
+        /// A list of Application IDs for cross-application queries.
         /// </param>
         /// <param name='customHeaders'>
         /// Headers that will be added to request.
@@ -1350,7 +1350,7 @@ namespace Microsoft.Azure.ApplicationInsights
         /// <return>
         /// A response object containing the response body and response headers.
         /// </return>
-        public async Task<HttpOperationResponse<QueryResults>> QueryWithHttpMessagesAsync(string appId, string query, string timespan = default(string), string timespan1 = default(string), IList<string> applications = default(IList<string>), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<HttpOperationResponse<QueryResults>> QueryWithHttpMessagesAsync(string appId, string query, string timespan = default(string), IList<string> applications = default(IList<string>), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (appId == null)
             {
@@ -1361,10 +1361,10 @@ namespace Microsoft.Azure.ApplicationInsights
                 throw new ValidationException(ValidationRules.CannotBeNull, "query");
             }
             QueryBody body = new QueryBody();
-            if (query != null || timespan1 != null || applications != null)
+            if (query != null || timespan != null || applications != null)
             {
                 body.Query = query;
-                body.Timespan = timespan1;
+                body.Timespan = timespan;
                 body.Applications = applications;
             }
             // Tracing
@@ -1375,7 +1375,6 @@ namespace Microsoft.Azure.ApplicationInsights
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
                 Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
                 tracingParameters.Add("appId", appId);
-                tracingParameters.Add("timespan", timespan);
                 tracingParameters.Add("body", body);
                 tracingParameters.Add("cancellationToken", cancellationToken);
                 ServiceClientTracing.Enter(_invocationId, this, "Query", tracingParameters);
@@ -1384,15 +1383,6 @@ namespace Microsoft.Azure.ApplicationInsights
             var _baseUrl = BaseUri.AbsoluteUri;
             var _url = new System.Uri(new System.Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "apps/{appId}/query").ToString();
             _url = _url.Replace("{appId}", System.Uri.EscapeDataString(appId));
-            List<string> _queryParameters = new List<string>();
-            if (timespan != null)
-            {
-                _queryParameters.Add(string.Format("timespan={0}", System.Uri.EscapeDataString(timespan)));
-            }
-            if (_queryParameters.Count > 0)
-            {
-                _url += "?" + string.Join("&", _queryParameters);
-            }
             // Create HTTP transport objects
             var _httpRequest = new HttpRequestMessage();
             HttpResponseMessage _httpResponse = null;

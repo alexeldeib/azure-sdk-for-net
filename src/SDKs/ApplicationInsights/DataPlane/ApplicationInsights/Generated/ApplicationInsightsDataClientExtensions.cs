@@ -496,17 +496,12 @@ namespace Microsoft.Azure.ApplicationInsights
             /// period value.  This timespan is applied in addition to any that are
             /// specified in the query expression.
             /// </param>
-            /// <param name='timespan1'>
-            /// Optional. The timespan over which to query data. This is an ISO8601 time
-            /// period value.  This timespan is applied in addition to any that are
-            /// specified in the query expression.
-            /// </param>
             /// <param name='applications'>
-            /// A list of applications that are included in the query.
+            /// A list of Application IDs for cross-application queries.
             /// </param>
-            public static QueryResults Query(this IApplicationInsightsDataClient operations, string appId, string query, string timespan = default(string), string timespan1 = default(string), IList<string> applications = default(IList<string>))
+            public static QueryResults Query(this IApplicationInsightsDataClient operations, string appId, string query, string timespan = default(string), IList<string> applications = default(IList<string>))
             {
-                return operations.QueryAsync(appId, query, timespan, timespan1, applications).GetAwaiter().GetResult();
+                return operations.QueryAsync(appId, query, timespan, applications).GetAwaiter().GetResult();
             }
 
             /// <summary>
@@ -532,20 +527,15 @@ namespace Microsoft.Azure.ApplicationInsights
             /// period value.  This timespan is applied in addition to any that are
             /// specified in the query expression.
             /// </param>
-            /// <param name='timespan1'>
-            /// Optional. The timespan over which to query data. This is an ISO8601 time
-            /// period value.  This timespan is applied in addition to any that are
-            /// specified in the query expression.
-            /// </param>
             /// <param name='applications'>
-            /// A list of applications that are included in the query.
+            /// A list of Application IDs for cross-application queries.
             /// </param>
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
-            public static async Task<QueryResults> QueryAsync(this IApplicationInsightsDataClient operations, string appId, string query, string timespan = default(string), string timespan1 = default(string), IList<string> applications = default(IList<string>), CancellationToken cancellationToken = default(CancellationToken))
+            public static async Task<QueryResults> QueryAsync(this IApplicationInsightsDataClient operations, string appId, string query, string timespan = default(string), IList<string> applications = default(IList<string>), CancellationToken cancellationToken = default(CancellationToken))
             {
-                using (var _result = await operations.QueryWithHttpMessagesAsync(appId, query, timespan, timespan1, applications, null, cancellationToken).ConfigureAwait(false))
+                using (var _result = await operations.QueryWithHttpMessagesAsync(appId, query, timespan, applications, null, cancellationToken).ConfigureAwait(false))
                 {
                     return _result.Body;
                 }

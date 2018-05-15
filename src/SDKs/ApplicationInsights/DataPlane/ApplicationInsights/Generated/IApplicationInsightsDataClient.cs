@@ -39,6 +39,11 @@ namespace Microsoft.Azure.ApplicationInsights
         JsonSerializerSettings DeserializationSettings { get; }
 
         /// <summary>
+        /// Application IDs to include in cross-application queries.
+        /// </summary>
+        IList<string> Applications { get; set; }
+
+        /// <summary>
         /// Subscription credentials which uniquely identify client
         /// subscription.
         /// </summary>
@@ -282,13 +287,8 @@ namespace Microsoft.Azure.ApplicationInsights
         /// time period value.  This timespan is applied in addition to any
         /// that are specified in the query expression.
         /// </param>
-        /// <param name='timespan1'>
-        /// Optional. The timespan over which to query data. This is an ISO8601
-        /// time period value.  This timespan is applied in addition to any
-        /// that are specified in the query expression.
-        /// </param>
         /// <param name='applications'>
-        /// A list of applications that are included in the query.
+        /// A list of Application IDs for cross-application queries.
         /// </param>
         /// <param name='customHeaders'>
         /// The headers that will be added to request.
@@ -296,7 +296,7 @@ namespace Microsoft.Azure.ApplicationInsights
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        Task<HttpOperationResponse<QueryResults>> QueryWithHttpMessagesAsync(string appId, string query, string timespan = default(string), string timespan1 = default(string), IList<string> applications = default(IList<string>), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse<QueryResults>> QueryWithHttpMessagesAsync(string appId, string query, string timespan = default(string), IList<string> applications = default(IList<string>), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
     }
 }
