@@ -190,6 +190,54 @@ namespace Microsoft.Azure.ApplicationInsights
             }
 
             /// <summary>
+            /// Retrieve metric data
+            /// </summary>
+            /// <remarks>
+            /// Gets metric values for multiple metrics
+            /// </remarks>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='appId'>
+            /// ID of the application. This is Application ID from the API Access settings
+            /// blade in the Azure portal.
+            /// </param>
+            /// <param name='body'>
+            /// The batched metrics query.
+            /// </param>
+            public static IList<MetricsResultsItem> GetMetrics(this IApplicationInsightsDataClient operations, string appId, IList<MetricsPostBodySchema> body)
+            {
+                return operations.GetMetricsAsync(appId, body).GetAwaiter().GetResult();
+            }
+
+            /// <summary>
+            /// Retrieve metric data
+            /// </summary>
+            /// <remarks>
+            /// Gets metric values for multiple metrics
+            /// </remarks>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='appId'>
+            /// ID of the application. This is Application ID from the API Access settings
+            /// blade in the Azure portal.
+            /// </param>
+            /// <param name='body'>
+            /// The batched metrics query.
+            /// </param>
+            /// <param name='cancellationToken'>
+            /// The cancellation token.
+            /// </param>
+            public static async Task<IList<MetricsResultsItem>> GetMetricsAsync(this IApplicationInsightsDataClient operations, string appId, IList<MetricsPostBodySchema> body, CancellationToken cancellationToken = default(CancellationToken))
+            {
+                using (var _result = await operations.GetMetricsWithHttpMessagesAsync(appId, body, null, cancellationToken).ConfigureAwait(false))
+                {
+                    return _result.Body;
+                }
+            }
+
+            /// <summary>
             /// Retrieve metric metatadata
             /// </summary>
             /// <remarks>

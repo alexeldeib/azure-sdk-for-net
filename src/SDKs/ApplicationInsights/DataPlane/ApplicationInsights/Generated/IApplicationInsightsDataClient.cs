@@ -130,6 +130,27 @@ namespace Microsoft.Azure.ApplicationInsights
         Task<HttpOperationResponse<MetricsResult>> GetMetricWithHttpMessagesAsync(string appId, string metricId, string timespan = default(string), System.TimeSpan? interval = default(System.TimeSpan?), IList<MetricsAggregation?> aggregation = default(IList<MetricsAggregation?>), IList<string> segment = default(IList<string>), int? top = default(int?), string orderby = default(string), string filter = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
+        /// Retrieve metric data
+        /// </summary>
+        /// <remarks>
+        /// Gets metric values for multiple metrics
+        /// </remarks>
+        /// <param name='appId'>
+        /// ID of the application. This is Application ID from the API Access
+        /// settings blade in the Azure portal.
+        /// </param>
+        /// <param name='body'>
+        /// The batched metrics query.
+        /// </param>
+        /// <param name='customHeaders'>
+        /// The headers that will be added to request.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        Task<HttpOperationResponse<IList<MetricsResultsItem>>> GetMetricsWithHttpMessagesAsync(string appId, IList<MetricsPostBodySchema> body, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
         /// Retrieve metric metatadata
         /// </summary>
         /// <remarks>

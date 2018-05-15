@@ -23,6 +23,7 @@ namespace Microsoft.Azure.ApplicationInsights
                 new Tuple<string, string, string>("ApplicationInsightsDataClient", "GetEvents", "v1"),
                 new Tuple<string, string, string>("ApplicationInsightsDataClient", "GetEventsMetadataOData", "v1"),
                 new Tuple<string, string, string>("ApplicationInsightsDataClient", "GetMetric", "v1"),
+                new Tuple<string, string, string>("ApplicationInsightsDataClient", "GetMetrics", "v1"),
                 new Tuple<string, string, string>("ApplicationInsightsDataClient", "GetMetricsMetadata", "v1"),
                 new Tuple<string, string, string>("ApplicationInsightsDataClient", "Query", "v1"),
               }.AsEnumerable();
