@@ -42,12 +42,6 @@ namespace Microsoft.Azure.ApplicationInsights
         public JsonSerializerSettings DeserializationSettings { get; private set; }
 
         /// <summary>
-        /// ID of the application. This is Application ID from the API Access settings
-        /// blade in the Azure portal.
-        /// </summary>
-        public string AppId { get; set; }
-
-        /// <summary>
         /// Subscription credentials which uniquely identify client subscription.
         /// </summary>
         public ServiceClientCredentials Credentials { get; private set; }
@@ -287,8 +281,12 @@ namespace Microsoft.Azure.ApplicationInsights
         /// Retrieve metric data
         /// </summary>
         /// <remarks>
-        /// Gets data for a single metric.
+        /// Gets metric values for a single metric
         /// </remarks>
+        /// <param name='appId'>
+        /// ID of the application. This is Application ID from the API Access settings
+        /// blade in the Azure portal.
+        /// </param>
         /// <param name='metricId'>
         /// ID of the metric. This is either a standard AI metric, or an
         /// application-specific custom metric. Possible values include:
@@ -373,11 +371,11 @@ namespace Microsoft.Azure.ApplicationInsights
         /// <return>
         /// A response object containing the response body and response headers.
         /// </return>
-        public async Task<HttpOperationResponse<MetricsResult>> GetMetricWithHttpMessagesAsync(string metricId, System.TimeSpan? timespan = default(System.TimeSpan?), System.TimeSpan? interval = default(System.TimeSpan?), IList<string> aggregation = default(IList<string>), IList<string> segment = default(IList<string>), int? top = default(int?), string orderby = default(string), string filter = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<HttpOperationResponse<MetricsResult>> GetMetricWithHttpMessagesAsync(string appId, string metricId, string timespan = default(string), System.TimeSpan? interval = default(System.TimeSpan?), IList<MetricsAggregation?> aggregation = default(IList<MetricsAggregation?>), IList<string> segment = default(IList<string>), int? top = default(int?), string orderby = default(string), string filter = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (AppId == null)
+            if (appId == null)
             {
-                throw new ValidationException(ValidationRules.CannotBeNull, "this.AppId");
+                throw new ValidationException(ValidationRules.CannotBeNull, "appId");
             }
             if (metricId == null)
             {
@@ -404,6 +402,7 @@ namespace Microsoft.Azure.ApplicationInsights
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
                 Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
+                tracingParameters.Add("appId", appId);
                 tracingParameters.Add("metricId", metricId);
                 tracingParameters.Add("timespan", timespan);
                 tracingParameters.Add("interval", interval);
@@ -418,12 +417,12 @@ namespace Microsoft.Azure.ApplicationInsights
             // Construct URL
             var _baseUrl = BaseUri.AbsoluteUri;
             var _url = new System.Uri(new System.Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "apps/{appId}/metrics/{metricId}").ToString();
-            _url = _url.Replace("{appId}", System.Uri.EscapeDataString(AppId));
+            _url = _url.Replace("{appId}", System.Uri.EscapeDataString(appId));
             _url = _url.Replace("{metricId}", System.Uri.EscapeDataString(metricId));
             List<string> _queryParameters = new List<string>();
             if (timespan != null)
             {
-                _queryParameters.Add(string.Format("timespan={0}", System.Uri.EscapeDataString(SafeJsonConvert.SerializeObject(timespan, SerializationSettings).Trim('"'))));
+                _queryParameters.Add(string.Format("timespan={0}", System.Uri.EscapeDataString(timespan)));
             }
             if (interval != null)
             {
@@ -554,182 +553,15 @@ namespace Microsoft.Azure.ApplicationInsights
         }
 
         /// <summary>
-        /// Retrieve metric data
-        /// </summary>
-        /// <remarks>
-        /// Gets metric values for multiple metrics
-        /// </remarks>
-        /// <param name='body'>
-        /// The batched metrics query.
-        /// </param>
-        /// <param name='customHeaders'>
-        /// Headers that will be added to request.
-        /// </param>
-        /// <param name='cancellationToken'>
-        /// The cancellation token.
-        /// </param>
-        /// <exception cref="ErrorResponseException">
-        /// Thrown when the operation returned an invalid status code
-        /// </exception>
-        /// <exception cref="SerializationException">
-        /// Thrown when unable to deserialize the response
-        /// </exception>
-        /// <exception cref="ValidationException">
-        /// Thrown when a required parameter is null
-        /// </exception>
-        /// <exception cref="System.ArgumentNullException">
-        /// Thrown when a required parameter is null
-        /// </exception>
-        /// <return>
-        /// A response object containing the response body and response headers.
-        /// </return>
-        public async Task<HttpOperationResponse<IList<MetricsResultsItem>>> GetMetricsWithHttpMessagesAsync(IList<MetricsPostBodySchema> body, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            if (AppId == null)
-            {
-                throw new ValidationException(ValidationRules.CannotBeNull, "this.AppId");
-            }
-            if (body == null)
-            {
-                throw new ValidationException(ValidationRules.CannotBeNull, "body");
-            }
-            if (body != null)
-            {
-                foreach (var element in body)
-                {
-                    if (element != null)
-                    {
-                        element.Validate();
-                    }
-                }
-            }
-            // Tracing
-            bool _shouldTrace = ServiceClientTracing.IsEnabled;
-            string _invocationId = null;
-            if (_shouldTrace)
-            {
-                _invocationId = ServiceClientTracing.NextInvocationId.ToString();
-                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
-                tracingParameters.Add("body", body);
-                tracingParameters.Add("cancellationToken", cancellationToken);
-                ServiceClientTracing.Enter(_invocationId, this, "GetMetrics", tracingParameters);
-            }
-            // Construct URL
-            var _baseUrl = BaseUri.AbsoluteUri;
-            var _url = new System.Uri(new System.Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "apps/{appId}/metrics").ToString();
-            _url = _url.Replace("{appId}", System.Uri.EscapeDataString(AppId));
-            // Create HTTP transport objects
-            var _httpRequest = new HttpRequestMessage();
-            HttpResponseMessage _httpResponse = null;
-            _httpRequest.Method = new HttpMethod("POST");
-            _httpRequest.RequestUri = new System.Uri(_url);
-            // Set Headers
-
-
-            if (customHeaders != null)
-            {
-                foreach(var _header in customHeaders)
-                {
-                    if (_httpRequest.Headers.Contains(_header.Key))
-                    {
-                        _httpRequest.Headers.Remove(_header.Key);
-                    }
-                    _httpRequest.Headers.TryAddWithoutValidation(_header.Key, _header.Value);
-                }
-            }
-
-            // Serialize Request
-            string _requestContent = null;
-            if(body != null)
-            {
-                _requestContent = SafeJsonConvert.SerializeObject(body, SerializationSettings);
-                _httpRequest.Content = new StringContent(_requestContent, System.Text.Encoding.UTF8);
-                _httpRequest.Content.Headers.ContentType =System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
-            }
-            // Set Credentials
-            if (Credentials != null)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                await Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
-            }
-            // Send Request
-            if (_shouldTrace)
-            {
-                ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
-            }
-            cancellationToken.ThrowIfCancellationRequested();
-            _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
-            if (_shouldTrace)
-            {
-                ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
-            }
-            HttpStatusCode _statusCode = _httpResponse.StatusCode;
-            cancellationToken.ThrowIfCancellationRequested();
-            string _responseContent = null;
-            if ((int)_statusCode != 200)
-            {
-                var ex = new ErrorResponseException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
-                try
-                {
-                    _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
-                    ErrorResponse _errorBody =  SafeJsonConvert.DeserializeObject<ErrorResponse>(_responseContent, DeserializationSettings);
-                    if (_errorBody != null)
-                    {
-                        ex.Body = _errorBody;
-                    }
-                }
-                catch (JsonException)
-                {
-                    // Ignore the exception
-                }
-                ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
-                ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
-                if (_shouldTrace)
-                {
-                    ServiceClientTracing.Error(_invocationId, ex);
-                }
-                _httpRequest.Dispose();
-                if (_httpResponse != null)
-                {
-                    _httpResponse.Dispose();
-                }
-                throw ex;
-            }
-            // Create Result
-            var _result = new HttpOperationResponse<IList<MetricsResultsItem>>();
-            _result.Request = _httpRequest;
-            _result.Response = _httpResponse;
-            // Deserialize Response
-            if ((int)_statusCode == 200)
-            {
-                _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
-                try
-                {
-                    _result.Body = SafeJsonConvert.DeserializeObject<IList<MetricsResultsItem>>(_responseContent, DeserializationSettings);
-                }
-                catch (JsonException ex)
-                {
-                    _httpRequest.Dispose();
-                    if (_httpResponse != null)
-                    {
-                        _httpResponse.Dispose();
-                    }
-                    throw new SerializationException("Unable to deserialize the response.", _responseContent, ex);
-                }
-            }
-            if (_shouldTrace)
-            {
-                ServiceClientTracing.Exit(_invocationId, _result);
-            }
-            return _result;
-        }
-
-        /// <summary>
         /// Retrieve metric metatadata
         /// </summary>
         /// <remarks>
         /// Gets metadata describing the available metrics
         /// </remarks>
+        /// <param name='appId'>
+        /// ID of the application. This is Application ID from the API Access settings
+        /// blade in the Azure portal.
+        /// </param>
         /// <param name='customHeaders'>
         /// Headers that will be added to request.
         /// </param>
@@ -751,11 +583,11 @@ namespace Microsoft.Azure.ApplicationInsights
         /// <return>
         /// A response object containing the response body and response headers.
         /// </return>
-        public async Task<HttpOperationResponse<object>> GetMetricsMetadataWithHttpMessagesAsync(Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<HttpOperationResponse<object>> GetMetricsMetadataWithHttpMessagesAsync(string appId, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (AppId == null)
+            if (appId == null)
             {
-                throw new ValidationException(ValidationRules.CannotBeNull, "this.AppId");
+                throw new ValidationException(ValidationRules.CannotBeNull, "appId");
             }
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
@@ -764,13 +596,14 @@ namespace Microsoft.Azure.ApplicationInsights
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
                 Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
+                tracingParameters.Add("appId", appId);
                 tracingParameters.Add("cancellationToken", cancellationToken);
                 ServiceClientTracing.Enter(_invocationId, this, "GetMetricsMetadata", tracingParameters);
             }
             // Construct URL
             var _baseUrl = BaseUri.AbsoluteUri;
             var _url = new System.Uri(new System.Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "apps/{appId}/metrics/metadata").ToString();
-            _url = _url.Replace("{appId}", System.Uri.EscapeDataString(AppId));
+            _url = _url.Replace("{appId}", System.Uri.EscapeDataString(appId));
             // Create HTTP transport objects
             var _httpRequest = new HttpRequestMessage();
             HttpResponseMessage _httpResponse = null;
@@ -877,6 +710,10 @@ namespace Microsoft.Azure.ApplicationInsights
         /// <remarks>
         /// Executes an OData query for events
         /// </remarks>
+        /// <param name='appId'>
+        /// ID of the application. This is Application ID from the API Access settings
+        /// blade in the Azure portal.
+        /// </param>
         /// <param name='eventType'>
         /// The type of events to query; either a standard event type (`traces`,
         /// `customEvents`, `pageViews`, `requests`, `dependencies`, `exceptions`,
@@ -940,11 +777,15 @@ namespace Microsoft.Azure.ApplicationInsights
         /// <return>
         /// A response object containing the response body and response headers.
         /// </return>
-        public async Task<HttpOperationResponse<EventsResults>> GetEventsWithHttpMessagesAsync(EventType eventType, System.TimeSpan? timespan = default(System.TimeSpan?), string filter = default(string), string search = default(string), string orderby = default(string), string select = default(string), int? skip = default(int?), int? top = default(int?), string format = default(string), bool? count = default(bool?), string apply = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<HttpOperationResponse<EventsResults>> GetEventsWithHttpMessagesAsync(string appId, string eventType, string timespan = default(string), string filter = default(string), string search = default(string), string orderby = default(string), string select = default(string), int? skip = default(int?), int? top = default(int?), string format = default(string), bool? count = default(bool?), string apply = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (AppId == null)
+            if (appId == null)
             {
-                throw new ValidationException(ValidationRules.CannotBeNull, "this.AppId");
+                throw new ValidationException(ValidationRules.CannotBeNull, "appId");
+            }
+            if (eventType == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "eventType");
             }
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
@@ -953,6 +794,7 @@ namespace Microsoft.Azure.ApplicationInsights
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
                 Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
+                tracingParameters.Add("appId", appId);
                 tracingParameters.Add("eventType", eventType);
                 tracingParameters.Add("timespan", timespan);
                 tracingParameters.Add("filter", filter);
@@ -970,12 +812,12 @@ namespace Microsoft.Azure.ApplicationInsights
             // Construct URL
             var _baseUrl = BaseUri.AbsoluteUri;
             var _url = new System.Uri(new System.Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "apps/{appId}/events/{eventType}").ToString();
-            _url = _url.Replace("{appId}", System.Uri.EscapeDataString(AppId));
-            _url = _url.Replace("{eventType}", System.Uri.EscapeDataString(SafeJsonConvert.SerializeObject(eventType, SerializationSettings).Trim('"')));
+            _url = _url.Replace("{appId}", System.Uri.EscapeDataString(appId));
+            _url = _url.Replace("{eventType}", System.Uri.EscapeDataString(eventType));
             List<string> _queryParameters = new List<string>();
             if (timespan != null)
             {
-                _queryParameters.Add(string.Format("timespan={0}", System.Uri.EscapeDataString(SafeJsonConvert.SerializeObject(timespan, SerializationSettings).Trim('"'))));
+                _queryParameters.Add(string.Format("timespan={0}", System.Uri.EscapeDataString(timespan)));
             }
             if (filter != null)
             {
@@ -1123,6 +965,10 @@ namespace Microsoft.Azure.ApplicationInsights
         /// <remarks>
         /// Gets the data for a single event
         /// </remarks>
+        /// <param name='appId'>
+        /// ID of the application. This is Application ID from the API Access settings
+        /// blade in the Azure portal.
+        /// </param>
         /// <param name='eventType'>
         /// The type of events to query; either a standard event type (`traces`,
         /// `customEvents`, `pageViews`, `requests`, `dependencies`, `exceptions`,
@@ -1160,11 +1006,15 @@ namespace Microsoft.Azure.ApplicationInsights
         /// <return>
         /// A response object containing the response body and response headers.
         /// </return>
-        public async Task<HttpOperationResponse<EventsResults>> GetEventWithHttpMessagesAsync(EventType eventType, string eventId, System.TimeSpan? timespan = default(System.TimeSpan?), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<HttpOperationResponse<EventsResults>> GetEventWithHttpMessagesAsync(string appId, string eventType, string eventId, string timespan = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (AppId == null)
+            if (appId == null)
             {
-                throw new ValidationException(ValidationRules.CannotBeNull, "this.AppId");
+                throw new ValidationException(ValidationRules.CannotBeNull, "appId");
+            }
+            if (eventType == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "eventType");
             }
             if (eventId == null)
             {
@@ -1177,6 +1027,7 @@ namespace Microsoft.Azure.ApplicationInsights
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
                 Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
+                tracingParameters.Add("appId", appId);
                 tracingParameters.Add("eventType", eventType);
                 tracingParameters.Add("timespan", timespan);
                 tracingParameters.Add("eventId", eventId);
@@ -1186,13 +1037,13 @@ namespace Microsoft.Azure.ApplicationInsights
             // Construct URL
             var _baseUrl = BaseUri.AbsoluteUri;
             var _url = new System.Uri(new System.Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "apps/{appId}/events/{eventType}/{eventId}").ToString();
-            _url = _url.Replace("{appId}", System.Uri.EscapeDataString(AppId));
-            _url = _url.Replace("{eventType}", System.Uri.EscapeDataString(SafeJsonConvert.SerializeObject(eventType, SerializationSettings).Trim('"')));
+            _url = _url.Replace("{appId}", System.Uri.EscapeDataString(appId));
+            _url = _url.Replace("{eventType}", System.Uri.EscapeDataString(eventType));
             _url = _url.Replace("{eventId}", System.Uri.EscapeDataString(eventId));
             List<string> _queryParameters = new List<string>();
             if (timespan != null)
             {
-                _queryParameters.Add(string.Format("timespan={0}", System.Uri.EscapeDataString(SafeJsonConvert.SerializeObject(timespan, SerializationSettings).Trim('"'))));
+                _queryParameters.Add(string.Format("timespan={0}", System.Uri.EscapeDataString(timespan)));
             }
             if (_queryParameters.Count > 0)
             {
@@ -1304,6 +1155,10 @@ namespace Microsoft.Azure.ApplicationInsights
         /// <remarks>
         /// Gets OData EDMX metadata describing the event data model
         /// </remarks>
+        /// <param name='appId'>
+        /// ID of the application. This is Application ID from the API Access settings
+        /// blade in the Azure portal.
+        /// </param>
         /// <param name='customHeaders'>
         /// Headers that will be added to request.
         /// </param>
@@ -1325,11 +1180,11 @@ namespace Microsoft.Azure.ApplicationInsights
         /// <return>
         /// A response object containing the response body and response headers.
         /// </return>
-        public async Task<HttpOperationResponse<object>> GetEventsMetadataODataWithHttpMessagesAsync(Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<HttpOperationResponse<object>> GetEventsMetadataODataWithHttpMessagesAsync(string appId, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (AppId == null)
+            if (appId == null)
             {
-                throw new ValidationException(ValidationRules.CannotBeNull, "this.AppId");
+                throw new ValidationException(ValidationRules.CannotBeNull, "appId");
             }
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
@@ -1338,13 +1193,14 @@ namespace Microsoft.Azure.ApplicationInsights
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
                 Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
+                tracingParameters.Add("appId", appId);
                 tracingParameters.Add("cancellationToken", cancellationToken);
                 ServiceClientTracing.Enter(_invocationId, this, "GetEventsMetadataOData", tracingParameters);
             }
             // Construct URL
             var _baseUrl = BaseUri.AbsoluteUri;
             var _url = new System.Uri(new System.Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "apps/{appId}/events/$metadata").ToString();
-            _url = _url.Replace("{appId}", System.Uri.EscapeDataString(AppId));
+            _url = _url.Replace("{appId}", System.Uri.EscapeDataString(appId));
             // Create HTTP transport objects
             var _httpRequest = new HttpRequestMessage();
             HttpResponseMessage _httpResponse = null;
@@ -1450,9 +1306,13 @@ namespace Microsoft.Azure.ApplicationInsights
         /// </summary>
         /// <remarks>
         /// Executes an Analytics query for data.
-        /// [Here](/documentation/2-Using-the-API/Query) is an example for using POST
-        /// with an Analytics query.
+        /// [Here](https://dev.applicationinsights.io/documentation/Using-the-API/Query)
+        /// is an example for using POST with an Analytics query.
         /// </remarks>
+        /// <param name='appId'>
+        /// ID of the application. This is Application ID from the API Access settings
+        /// blade in the Azure portal.
+        /// </param>
         /// <param name='query'>
         /// The query to execute.
         /// </param>
@@ -1490,11 +1350,11 @@ namespace Microsoft.Azure.ApplicationInsights
         /// <return>
         /// A response object containing the response body and response headers.
         /// </return>
-        public async Task<HttpOperationResponse<QueryResults>> QueryWithHttpMessagesAsync(string query, System.TimeSpan? timespan = default(System.TimeSpan?), System.TimeSpan? timespan1 = default(System.TimeSpan?), IList<string> applications = default(IList<string>), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<HttpOperationResponse<QueryResults>> QueryWithHttpMessagesAsync(string appId, string query, string timespan = default(string), string timespan1 = default(string), IList<string> applications = default(IList<string>), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (AppId == null)
+            if (appId == null)
             {
-                throw new ValidationException(ValidationRules.CannotBeNull, "this.AppId");
+                throw new ValidationException(ValidationRules.CannotBeNull, "appId");
             }
             if (query == null)
             {
@@ -1514,6 +1374,7 @@ namespace Microsoft.Azure.ApplicationInsights
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
                 Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
+                tracingParameters.Add("appId", appId);
                 tracingParameters.Add("timespan", timespan);
                 tracingParameters.Add("body", body);
                 tracingParameters.Add("cancellationToken", cancellationToken);
@@ -1522,11 +1383,11 @@ namespace Microsoft.Azure.ApplicationInsights
             // Construct URL
             var _baseUrl = BaseUri.AbsoluteUri;
             var _url = new System.Uri(new System.Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "apps/{appId}/query").ToString();
-            _url = _url.Replace("{appId}", System.Uri.EscapeDataString(AppId));
+            _url = _url.Replace("{appId}", System.Uri.EscapeDataString(appId));
             List<string> _queryParameters = new List<string>();
             if (timespan != null)
             {
-                _queryParameters.Add(string.Format("timespan={0}", System.Uri.EscapeDataString(SafeJsonConvert.SerializeObject(timespan, SerializationSettings).Trim('"'))));
+                _queryParameters.Add(string.Format("timespan={0}", System.Uri.EscapeDataString(timespan)));
             }
             if (_queryParameters.Count > 0)
             {
@@ -1560,153 +1421,6 @@ namespace Microsoft.Azure.ApplicationInsights
                 _httpRequest.Content = new StringContent(_requestContent, System.Text.Encoding.UTF8);
                 _httpRequest.Content.Headers.ContentType =System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
             }
-            // Set Credentials
-            if (Credentials != null)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                await Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
-            }
-            // Send Request
-            if (_shouldTrace)
-            {
-                ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
-            }
-            cancellationToken.ThrowIfCancellationRequested();
-            _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
-            if (_shouldTrace)
-            {
-                ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
-            }
-            HttpStatusCode _statusCode = _httpResponse.StatusCode;
-            cancellationToken.ThrowIfCancellationRequested();
-            string _responseContent = null;
-            if ((int)_statusCode != 200)
-            {
-                var ex = new ErrorResponseException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
-                try
-                {
-                    _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
-                    ErrorResponse _errorBody =  SafeJsonConvert.DeserializeObject<ErrorResponse>(_responseContent, DeserializationSettings);
-                    if (_errorBody != null)
-                    {
-                        ex.Body = _errorBody;
-                    }
-                }
-                catch (JsonException)
-                {
-                    // Ignore the exception
-                }
-                ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
-                ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
-                if (_shouldTrace)
-                {
-                    ServiceClientTracing.Error(_invocationId, ex);
-                }
-                _httpRequest.Dispose();
-                if (_httpResponse != null)
-                {
-                    _httpResponse.Dispose();
-                }
-                throw ex;
-            }
-            // Create Result
-            var _result = new HttpOperationResponse<QueryResults>();
-            _result.Request = _httpRequest;
-            _result.Response = _httpResponse;
-            // Deserialize Response
-            if ((int)_statusCode == 200)
-            {
-                _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
-                try
-                {
-                    _result.Body = SafeJsonConvert.DeserializeObject<QueryResults>(_responseContent, DeserializationSettings);
-                }
-                catch (JsonException ex)
-                {
-                    _httpRequest.Dispose();
-                    if (_httpResponse != null)
-                    {
-                        _httpResponse.Dispose();
-                    }
-                    throw new SerializationException("Unable to deserialize the response.", _responseContent, ex);
-                }
-            }
-            if (_shouldTrace)
-            {
-                ServiceClientTracing.Exit(_invocationId, _result);
-            }
-            return _result;
-        }
-
-        /// <summary>
-        /// Get Analytics query metadata
-        /// </summary>
-        /// <remarks>
-        /// Gets Analytics query schema describing the data model
-        /// </remarks>
-        /// <param name='customHeaders'>
-        /// Headers that will be added to request.
-        /// </param>
-        /// <param name='cancellationToken'>
-        /// The cancellation token.
-        /// </param>
-        /// <exception cref="ErrorResponseException">
-        /// Thrown when the operation returned an invalid status code
-        /// </exception>
-        /// <exception cref="SerializationException">
-        /// Thrown when unable to deserialize the response
-        /// </exception>
-        /// <exception cref="ValidationException">
-        /// Thrown when a required parameter is null
-        /// </exception>
-        /// <exception cref="System.ArgumentNullException">
-        /// Thrown when a required parameter is null
-        /// </exception>
-        /// <return>
-        /// A response object containing the response body and response headers.
-        /// </return>
-        public async Task<HttpOperationResponse<QueryResults>> GetQuerySchemaWithHttpMessagesAsync(Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            if (AppId == null)
-            {
-                throw new ValidationException(ValidationRules.CannotBeNull, "this.AppId");
-            }
-            // Tracing
-            bool _shouldTrace = ServiceClientTracing.IsEnabled;
-            string _invocationId = null;
-            if (_shouldTrace)
-            {
-                _invocationId = ServiceClientTracing.NextInvocationId.ToString();
-                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
-                tracingParameters.Add("cancellationToken", cancellationToken);
-                ServiceClientTracing.Enter(_invocationId, this, "GetQuerySchema", tracingParameters);
-            }
-            // Construct URL
-            var _baseUrl = BaseUri.AbsoluteUri;
-            var _url = new System.Uri(new System.Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "apps/{appId}/query/schema").ToString();
-            _url = _url.Replace("{appId}", System.Uri.EscapeDataString(AppId));
-            // Create HTTP transport objects
-            var _httpRequest = new HttpRequestMessage();
-            HttpResponseMessage _httpResponse = null;
-            _httpRequest.Method = new HttpMethod("GET");
-            _httpRequest.RequestUri = new System.Uri(_url);
-            // Set Headers
-
-
-            if (customHeaders != null)
-            {
-                foreach(var _header in customHeaders)
-                {
-                    if (_httpRequest.Headers.Contains(_header.Key))
-                    {
-                        _httpRequest.Headers.Remove(_header.Key);
-                    }
-                    _httpRequest.Headers.TryAddWithoutValidation(_header.Key, _header.Value);
-                }
-            }
-
-            // Serialize Request
-            string _requestContent = null;
             // Set Credentials
             if (Credentials != null)
             {

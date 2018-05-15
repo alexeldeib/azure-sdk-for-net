@@ -38,12 +38,6 @@ namespace Microsoft.Azure.OperationalInsights
         public JsonSerializerSettings DeserializationSettings { get; private set; }
 
         /// <summary>
-        /// ID of the workspace. This is Workspace ID from the Properties blade in the
-        /// Azure portal.
-        /// </summary>
-        public string WorkspaceId { get; set; }
-
-        /// <summary>
         /// Subscription credentials which uniquely identify client subscription.
         /// </summary>
         public ServiceClientCredentials Credentials { get; private set; }
@@ -285,6 +279,10 @@ namespace Microsoft.Azure.OperationalInsights
         /// [Here](/documentation/2-Using-the-API/Query) is an example for using POST
         /// with an Analytics query.
         /// </remarks>
+        /// <param name='workspaceId'>
+        /// ID of the workspace. This is Workspace ID from the Properties blade in the
+        /// Azure portal.
+        /// </param>
         /// <param name='query'>
         /// The query to execute.
         /// </param>
@@ -317,11 +315,11 @@ namespace Microsoft.Azure.OperationalInsights
         /// <return>
         /// A response object containing the response body and response headers.
         /// </return>
-        public async Task<HttpOperationResponse<QueryResults>> QueryWithHttpMessagesAsync(string query, System.TimeSpan? timespan = default(System.TimeSpan?), IList<string> workspaces = default(IList<string>), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<HttpOperationResponse<QueryResults>> QueryWithHttpMessagesAsync(string workspaceId, string query, string timespan = default(string), IList<string> workspaces = default(IList<string>), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (WorkspaceId == null)
+            if (workspaceId == null)
             {
-                throw new ValidationException(ValidationRules.CannotBeNull, "this.WorkspaceId");
+                throw new ValidationException(ValidationRules.CannotBeNull, "workspaceId");
             }
             if (query == null)
             {
@@ -341,6 +339,7 @@ namespace Microsoft.Azure.OperationalInsights
             {
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
                 Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
+                tracingParameters.Add("workspaceId", workspaceId);
                 tracingParameters.Add("body", body);
                 tracingParameters.Add("cancellationToken", cancellationToken);
                 ServiceClientTracing.Enter(_invocationId, this, "Query", tracingParameters);
@@ -348,7 +347,7 @@ namespace Microsoft.Azure.OperationalInsights
             // Construct URL
             var _baseUrl = BaseUri.AbsoluteUri;
             var _url = new System.Uri(new System.Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "workspaces/{workspaceId}/query").ToString();
-            _url = _url.Replace("{workspaceId}", System.Uri.EscapeDataString(WorkspaceId));
+            _url = _url.Replace("{workspaceId}", System.Uri.EscapeDataString(workspaceId));
             // Create HTTP transport objects
             var _httpRequest = new HttpRequestMessage();
             HttpResponseMessage _httpResponse = null;

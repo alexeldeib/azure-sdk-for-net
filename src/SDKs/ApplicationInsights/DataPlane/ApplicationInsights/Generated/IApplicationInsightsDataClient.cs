@@ -39,12 +39,6 @@ namespace Microsoft.Azure.ApplicationInsights
         JsonSerializerSettings DeserializationSettings { get; }
 
         /// <summary>
-        /// ID of the application. This is Application ID from the API Access
-        /// settings blade in the Azure portal.
-        /// </summary>
-        string AppId { get; set; }
-
-        /// <summary>
         /// Subscription credentials which uniquely identify client
         /// subscription.
         /// </summary>
@@ -55,8 +49,12 @@ namespace Microsoft.Azure.ApplicationInsights
         /// Retrieve metric data
         /// </summary>
         /// <remarks>
-        /// Gets data for a single metric.
+        /// Gets metric values for a single metric
         /// </remarks>
+        /// <param name='appId'>
+        /// ID of the application. This is Application ID from the API Access
+        /// settings blade in the Azure portal.
+        /// </param>
         /// <param name='metricId'>
         /// ID of the metric. This is either a standard AI metric, or an
         /// application-specific custom metric. Possible values include:
@@ -129,24 +127,7 @@ namespace Microsoft.Azure.ApplicationInsights
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        Task<HttpOperationResponse<MetricsResult>> GetMetricWithHttpMessagesAsync(string metricId, System.TimeSpan? timespan = default(System.TimeSpan?), System.TimeSpan? interval = default(System.TimeSpan?), IList<string> aggregation = default(IList<string>), IList<string> segment = default(IList<string>), int? top = default(int?), string orderby = default(string), string filter = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
-
-        /// <summary>
-        /// Retrieve metric data
-        /// </summary>
-        /// <remarks>
-        /// Gets metric values for multiple metrics
-        /// </remarks>
-        /// <param name='body'>
-        /// The batched metrics query.
-        /// </param>
-        /// <param name='customHeaders'>
-        /// The headers that will be added to request.
-        /// </param>
-        /// <param name='cancellationToken'>
-        /// The cancellation token.
-        /// </param>
-        Task<HttpOperationResponse<IList<MetricsResultsItem>>> GetMetricsWithHttpMessagesAsync(IList<MetricsPostBodySchema> body, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse<MetricsResult>> GetMetricWithHttpMessagesAsync(string appId, string metricId, string timespan = default(string), System.TimeSpan? interval = default(System.TimeSpan?), IList<MetricsAggregation?> aggregation = default(IList<MetricsAggregation?>), IList<string> segment = default(IList<string>), int? top = default(int?), string orderby = default(string), string filter = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Retrieve metric metatadata
@@ -154,13 +135,17 @@ namespace Microsoft.Azure.ApplicationInsights
         /// <remarks>
         /// Gets metadata describing the available metrics
         /// </remarks>
+        /// <param name='appId'>
+        /// ID of the application. This is Application ID from the API Access
+        /// settings blade in the Azure portal.
+        /// </param>
         /// <param name='customHeaders'>
         /// The headers that will be added to request.
         /// </param>
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        Task<HttpOperationResponse<object>> GetMetricsMetadataWithHttpMessagesAsync(Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse<object>> GetMetricsMetadataWithHttpMessagesAsync(string appId, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Execute OData query
@@ -168,6 +153,10 @@ namespace Microsoft.Azure.ApplicationInsights
         /// <remarks>
         /// Executes an OData query for events
         /// </remarks>
+        /// <param name='appId'>
+        /// ID of the application. This is Application ID from the API Access
+        /// settings blade in the Azure portal.
+        /// </param>
         /// <param name='eventType'>
         /// The type of events to query; either a standard event type
         /// (`traces`, `customEvents`, `pageViews`, `requests`, `dependencies`,
@@ -218,7 +207,7 @@ namespace Microsoft.Azure.ApplicationInsights
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        Task<HttpOperationResponse<EventsResults>> GetEventsWithHttpMessagesAsync(EventType eventType, System.TimeSpan? timespan = default(System.TimeSpan?), string filter = default(string), string search = default(string), string orderby = default(string), string select = default(string), int? skip = default(int?), int? top = default(int?), string format = default(string), bool? count = default(bool?), string apply = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse<EventsResults>> GetEventsWithHttpMessagesAsync(string appId, string eventType, string timespan = default(string), string filter = default(string), string search = default(string), string orderby = default(string), string select = default(string), int? skip = default(int?), int? top = default(int?), string format = default(string), bool? count = default(bool?), string apply = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Get an event
@@ -226,6 +215,10 @@ namespace Microsoft.Azure.ApplicationInsights
         /// <remarks>
         /// Gets the data for a single event
         /// </remarks>
+        /// <param name='appId'>
+        /// ID of the application. This is Application ID from the API Access
+        /// settings blade in the Azure portal.
+        /// </param>
         /// <param name='eventType'>
         /// The type of events to query; either a standard event type
         /// (`traces`, `customEvents`, `pageViews`, `requests`, `dependencies`,
@@ -249,7 +242,7 @@ namespace Microsoft.Azure.ApplicationInsights
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        Task<HttpOperationResponse<EventsResults>> GetEventWithHttpMessagesAsync(EventType eventType, string eventId, System.TimeSpan? timespan = default(System.TimeSpan?), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse<EventsResults>> GetEventWithHttpMessagesAsync(string appId, string eventType, string eventId, string timespan = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Get OData metadata
@@ -257,22 +250,30 @@ namespace Microsoft.Azure.ApplicationInsights
         /// <remarks>
         /// Gets OData EDMX metadata describing the event data model
         /// </remarks>
+        /// <param name='appId'>
+        /// ID of the application. This is Application ID from the API Access
+        /// settings blade in the Azure portal.
+        /// </param>
         /// <param name='customHeaders'>
         /// The headers that will be added to request.
         /// </param>
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        Task<HttpOperationResponse<object>> GetEventsMetadataODataWithHttpMessagesAsync(Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse<object>> GetEventsMetadataODataWithHttpMessagesAsync(string appId, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Execute an Analytics query
         /// </summary>
         /// <remarks>
         /// Executes an Analytics query for data.
-        /// [Here](/documentation/2-Using-the-API/Query) is an example for
-        /// using POST with an Analytics query.
+        /// [Here](https://dev.applicationinsights.io/documentation/Using-the-API/Query)
+        /// is an example for using POST with an Analytics query.
         /// </remarks>
+        /// <param name='appId'>
+        /// ID of the application. This is Application ID from the API Access
+        /// settings blade in the Azure portal.
+        /// </param>
         /// <param name='query'>
         /// The query to execute.
         /// </param>
@@ -295,21 +296,7 @@ namespace Microsoft.Azure.ApplicationInsights
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        Task<HttpOperationResponse<QueryResults>> QueryWithHttpMessagesAsync(string query, System.TimeSpan? timespan = default(System.TimeSpan?), System.TimeSpan? timespan1 = default(System.TimeSpan?), IList<string> applications = default(IList<string>), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
-
-        /// <summary>
-        /// Get Analytics query metadata
-        /// </summary>
-        /// <remarks>
-        /// Gets Analytics query schema describing the data model
-        /// </remarks>
-        /// <param name='customHeaders'>
-        /// The headers that will be added to request.
-        /// </param>
-        /// <param name='cancellationToken'>
-        /// The cancellation token.
-        /// </param>
-        Task<HttpOperationResponse<QueryResults>> GetQuerySchemaWithHttpMessagesAsync(Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse<QueryResults>> QueryWithHttpMessagesAsync(string appId, string query, string timespan = default(string), string timespan1 = default(string), IList<string> applications = default(IList<string>), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
     }
 }

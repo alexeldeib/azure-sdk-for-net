@@ -35,12 +35,6 @@ namespace Microsoft.Azure.OperationalInsights
         JsonSerializerSettings DeserializationSettings { get; }
 
         /// <summary>
-        /// ID of the workspace. This is Workspace ID from the Properties blade
-        /// in the Azure portal.
-        /// </summary>
-        string WorkspaceId { get; set; }
-
-        /// <summary>
         /// Subscription credentials which uniquely identify client
         /// subscription.
         /// </summary>
@@ -55,6 +49,10 @@ namespace Microsoft.Azure.OperationalInsights
         /// [Here](/documentation/2-Using-the-API/Query) is an example for
         /// using POST with an Analytics query.
         /// </remarks>
+        /// <param name='workspaceId'>
+        /// ID of the workspace. This is Workspace ID from the Properties blade
+        /// in the Azure portal.
+        /// </param>
         /// <param name='query'>
         /// The query to execute.
         /// </param>
@@ -72,7 +70,7 @@ namespace Microsoft.Azure.OperationalInsights
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        Task<HttpOperationResponse<QueryResults>> QueryWithHttpMessagesAsync(string query, System.TimeSpan? timespan = default(System.TimeSpan?), IList<string> workspaces = default(IList<string>), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse<QueryResults>> QueryWithHttpMessagesAsync(string workspaceId, string query, string timespan = default(string), IList<string> workspaces = default(IList<string>), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
     }
 }

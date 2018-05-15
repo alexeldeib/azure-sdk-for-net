@@ -28,6 +28,10 @@ namespace Microsoft.Azure.OperationalInsights
             /// <param name='operations'>
             /// The operations group for this extension method.
             /// </param>
+            /// <param name='workspaceId'>
+            /// ID of the workspace. This is Workspace ID from the Properties blade in the
+            /// Azure portal.
+            /// </param>
             /// <param name='query'>
             /// The query to execute.
             /// </param>
@@ -39,9 +43,9 @@ namespace Microsoft.Azure.OperationalInsights
             /// <param name='workspaces'>
             /// A list of workspaces that are included in the query.
             /// </param>
-            public static QueryResults Query(this IOperationalInsightsDataClient operations, string query, System.TimeSpan? timespan = default(System.TimeSpan?), IList<string> workspaces = default(IList<string>))
+            public static QueryResults Query(this IOperationalInsightsDataClient operations, string workspaceId, string query, string timespan = default(string), IList<string> workspaces = default(IList<string>))
             {
-                return operations.QueryAsync(query, timespan, workspaces).GetAwaiter().GetResult();
+                return operations.QueryAsync(workspaceId, query, timespan, workspaces).GetAwaiter().GetResult();
             }
 
             /// <summary>
@@ -54,6 +58,10 @@ namespace Microsoft.Azure.OperationalInsights
             /// </remarks>
             /// <param name='operations'>
             /// The operations group for this extension method.
+            /// </param>
+            /// <param name='workspaceId'>
+            /// ID of the workspace. This is Workspace ID from the Properties blade in the
+            /// Azure portal.
             /// </param>
             /// <param name='query'>
             /// The query to execute.
@@ -69,9 +77,9 @@ namespace Microsoft.Azure.OperationalInsights
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
-            public static async Task<QueryResults> QueryAsync(this IOperationalInsightsDataClient operations, string query, System.TimeSpan? timespan = default(System.TimeSpan?), IList<string> workspaces = default(IList<string>), CancellationToken cancellationToken = default(CancellationToken))
+            public static async Task<QueryResults> QueryAsync(this IOperationalInsightsDataClient operations, string workspaceId, string query, string timespan = default(string), IList<string> workspaces = default(IList<string>), CancellationToken cancellationToken = default(CancellationToken))
             {
-                using (var _result = await operations.QueryWithHttpMessagesAsync(query, timespan, workspaces, null, cancellationToken).ConfigureAwait(false))
+                using (var _result = await operations.QueryWithHttpMessagesAsync(workspaceId, query, timespan, workspaces, null, cancellationToken).ConfigureAwait(false))
                 {
                     return _result.Body;
                 }
