@@ -63,16 +63,13 @@ namespace Microsoft.Azure.OperationalInsights
         /// time period value.  This timespan is applied in addition to any
         /// that are specified in the query expression.
         /// </param>
-        /// <param name='workspaces'>
-        /// A list of workspaces that are included in the query.
-        /// </param>
         /// <param name='customHeaders'>
         /// The headers that will be added to request.
         /// </param>
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        Task<HttpOperationResponse<QueryResults>> QueryWithHttpMessagesAsync(string query, System.TimeSpan? timespan = default(System.TimeSpan?), IList<string> workspaces = default(IList<string>), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse<QueryResults>> QueryWithHttpMessagesAsync(string query, string timespan = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
     }
 }

@@ -25,7 +25,7 @@ namespace Microsoft.Azure.ApplicationInsights
             /// Retrieve metric data
             /// </summary>
             /// <remarks>
-            /// Gets data for a single metric.
+            /// Gets metric values for a single metric
             /// </remarks>
             /// <param name='operations'>
             /// The operations group for this extension method.
@@ -93,7 +93,7 @@ namespace Microsoft.Azure.ApplicationInsights
             /// OData filter expression where the keys of each clause should be applicable
             /// dimensions for the metric you are retrieving.
             /// </param>
-            public static MetricsResult GetMetric(this IApplicationInsightsDataClient operations, string metricId, System.TimeSpan? timespan = default(System.TimeSpan?), System.TimeSpan? interval = default(System.TimeSpan?), IList<string> aggregation = default(IList<string>), IList<string> segment = default(IList<string>), int? top = default(int?), string orderby = default(string), string filter = default(string))
+            public static MetricsResult GetMetric(this IApplicationInsightsDataClient operations, string metricId, string timespan = default(string), System.TimeSpan? interval = default(System.TimeSpan?), IList<MetricsAggregation?> aggregation = default(IList<MetricsAggregation?>), IList<string> segment = default(IList<string>), int? top = default(int?), string orderby = default(string), string filter = default(string))
             {
                 return operations.GetMetricAsync(metricId, timespan, interval, aggregation, segment, top, orderby, filter).GetAwaiter().GetResult();
             }
@@ -102,7 +102,7 @@ namespace Microsoft.Azure.ApplicationInsights
             /// Retrieve metric data
             /// </summary>
             /// <remarks>
-            /// Gets data for a single metric.
+            /// Gets metric values for a single metric
             /// </remarks>
             /// <param name='operations'>
             /// The operations group for this extension method.
@@ -173,49 +173,9 @@ namespace Microsoft.Azure.ApplicationInsights
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
-            public static async Task<MetricsResult> GetMetricAsync(this IApplicationInsightsDataClient operations, string metricId, System.TimeSpan? timespan = default(System.TimeSpan?), System.TimeSpan? interval = default(System.TimeSpan?), IList<string> aggregation = default(IList<string>), IList<string> segment = default(IList<string>), int? top = default(int?), string orderby = default(string), string filter = default(string), CancellationToken cancellationToken = default(CancellationToken))
+            public static async Task<MetricsResult> GetMetricAsync(this IApplicationInsightsDataClient operations, string metricId, string timespan = default(string), System.TimeSpan? interval = default(System.TimeSpan?), IList<MetricsAggregation?> aggregation = default(IList<MetricsAggregation?>), IList<string> segment = default(IList<string>), int? top = default(int?), string orderby = default(string), string filter = default(string), CancellationToken cancellationToken = default(CancellationToken))
             {
                 using (var _result = await operations.GetMetricWithHttpMessagesAsync(metricId, timespan, interval, aggregation, segment, top, orderby, filter, null, cancellationToken).ConfigureAwait(false))
-                {
-                    return _result.Body;
-                }
-            }
-
-            /// <summary>
-            /// Retrieve metric data
-            /// </summary>
-            /// <remarks>
-            /// Gets metric values for multiple metrics
-            /// </remarks>
-            /// <param name='operations'>
-            /// The operations group for this extension method.
-            /// </param>
-            /// <param name='body'>
-            /// The batched metrics query.
-            /// </param>
-            public static IList<MetricsResultsItem> GetMetrics(this IApplicationInsightsDataClient operations, IList<MetricsPostBodySchema> body)
-            {
-                return operations.GetMetricsAsync(body).GetAwaiter().GetResult();
-            }
-
-            /// <summary>
-            /// Retrieve metric data
-            /// </summary>
-            /// <remarks>
-            /// Gets metric values for multiple metrics
-            /// </remarks>
-            /// <param name='operations'>
-            /// The operations group for this extension method.
-            /// </param>
-            /// <param name='body'>
-            /// The batched metrics query.
-            /// </param>
-            /// <param name='cancellationToken'>
-            /// The cancellation token.
-            /// </param>
-            public static async Task<IList<MetricsResultsItem>> GetMetricsAsync(this IApplicationInsightsDataClient operations, IList<MetricsPostBodySchema> body, CancellationToken cancellationToken = default(CancellationToken))
-            {
-                using (var _result = await operations.GetMetricsWithHttpMessagesAsync(body, null, cancellationToken).ConfigureAwait(false))
                 {
                     return _result.Body;
                 }
@@ -306,7 +266,7 @@ namespace Microsoft.Azure.ApplicationInsights
             /// <param name='apply'>
             /// An expression used for aggregation over returned events
             /// </param>
-            public static EventsResults GetEvents(this IApplicationInsightsDataClient operations, EventType eventType, System.TimeSpan? timespan = default(System.TimeSpan?), string filter = default(string), string search = default(string), string orderby = default(string), string select = default(string), int? skip = default(int?), int? top = default(int?), string format = default(string), bool? count = default(bool?), string apply = default(string))
+            public static EventsResults GetEvents(this IApplicationInsightsDataClient operations, string eventType, string timespan = default(string), string filter = default(string), string search = default(string), string orderby = default(string), string select = default(string), int? skip = default(int?), int? top = default(int?), string format = default(string), bool? count = default(bool?), string apply = default(string))
             {
                 return operations.GetEventsAsync(eventType, timespan, filter, search, orderby, select, skip, top, format, count, apply).GetAwaiter().GetResult();
             }
@@ -365,7 +325,7 @@ namespace Microsoft.Azure.ApplicationInsights
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
-            public static async Task<EventsResults> GetEventsAsync(this IApplicationInsightsDataClient operations, EventType eventType, System.TimeSpan? timespan = default(System.TimeSpan?), string filter = default(string), string search = default(string), string orderby = default(string), string select = default(string), int? skip = default(int?), int? top = default(int?), string format = default(string), bool? count = default(bool?), string apply = default(string), CancellationToken cancellationToken = default(CancellationToken))
+            public static async Task<EventsResults> GetEventsAsync(this IApplicationInsightsDataClient operations, string eventType, string timespan = default(string), string filter = default(string), string search = default(string), string orderby = default(string), string select = default(string), int? skip = default(int?), int? top = default(int?), string format = default(string), bool? count = default(bool?), string apply = default(string), CancellationToken cancellationToken = default(CancellationToken))
             {
                 using (var _result = await operations.GetEventsWithHttpMessagesAsync(eventType, timespan, filter, search, orderby, select, skip, top, format, count, apply, null, cancellationToken).ConfigureAwait(false))
                 {
@@ -398,7 +358,7 @@ namespace Microsoft.Azure.ApplicationInsights
             /// time period value.  This timespan is applied in addition to any that are
             /// specified in the Odata expression.
             /// </param>
-            public static EventsResults GetEvent(this IApplicationInsightsDataClient operations, EventType eventType, string eventId, System.TimeSpan? timespan = default(System.TimeSpan?))
+            public static EventsResults GetEvent(this IApplicationInsightsDataClient operations, string eventType, string eventId, string timespan = default(string))
             {
                 return operations.GetEventAsync(eventType, eventId, timespan).GetAwaiter().GetResult();
             }
@@ -431,7 +391,7 @@ namespace Microsoft.Azure.ApplicationInsights
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
-            public static async Task<EventsResults> GetEventAsync(this IApplicationInsightsDataClient operations, EventType eventType, string eventId, System.TimeSpan? timespan = default(System.TimeSpan?), CancellationToken cancellationToken = default(CancellationToken))
+            public static async Task<EventsResults> GetEventAsync(this IApplicationInsightsDataClient operations, string eventType, string eventId, string timespan = default(string), CancellationToken cancellationToken = default(CancellationToken))
             {
                 using (var _result = await operations.GetEventWithHttpMessagesAsync(eventType, eventId, timespan, null, cancellationToken).ConfigureAwait(false))
                 {
@@ -478,8 +438,8 @@ namespace Microsoft.Azure.ApplicationInsights
             /// </summary>
             /// <remarks>
             /// Executes an Analytics query for data.
-            /// [Here](/documentation/2-Using-the-API/Query) is an example for using POST
-            /// with an Analytics query.
+            /// [Here](https://dev.applicationinsights.io/documentation/Using-the-API/Query)
+            /// is an example for using POST with an Analytics query.
             /// </remarks>
             /// <param name='operations'>
             /// The operations group for this extension method.
@@ -497,12 +457,9 @@ namespace Microsoft.Azure.ApplicationInsights
             /// period value.  This timespan is applied in addition to any that are
             /// specified in the query expression.
             /// </param>
-            /// <param name='applications'>
-            /// A list of applications that are included in the query.
-            /// </param>
-            public static QueryResults Query(this IApplicationInsightsDataClient operations, string query, System.TimeSpan? timespan = default(System.TimeSpan?), System.TimeSpan? timespan1 = default(System.TimeSpan?), IList<string> applications = default(IList<string>))
+            public static QueryResults Query(this IApplicationInsightsDataClient operations, string query, string timespan = default(string), string timespan1 = default(string))
             {
-                return operations.QueryAsync(query, timespan, timespan1, applications).GetAwaiter().GetResult();
+                return operations.QueryAsync(query, timespan, timespan1).GetAwaiter().GetResult();
             }
 
             /// <summary>
@@ -510,8 +467,8 @@ namespace Microsoft.Azure.ApplicationInsights
             /// </summary>
             /// <remarks>
             /// Executes an Analytics query for data.
-            /// [Here](/documentation/2-Using-the-API/Query) is an example for using POST
-            /// with an Analytics query.
+            /// [Here](https://dev.applicationinsights.io/documentation/Using-the-API/Query)
+            /// is an example for using POST with an Analytics query.
             /// </remarks>
             /// <param name='operations'>
             /// The operations group for this extension method.
@@ -529,49 +486,12 @@ namespace Microsoft.Azure.ApplicationInsights
             /// period value.  This timespan is applied in addition to any that are
             /// specified in the query expression.
             /// </param>
-            /// <param name='applications'>
-            /// A list of applications that are included in the query.
-            /// </param>
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
-            public static async Task<QueryResults> QueryAsync(this IApplicationInsightsDataClient operations, string query, System.TimeSpan? timespan = default(System.TimeSpan?), System.TimeSpan? timespan1 = default(System.TimeSpan?), IList<string> applications = default(IList<string>), CancellationToken cancellationToken = default(CancellationToken))
+            public static async Task<QueryResults> QueryAsync(this IApplicationInsightsDataClient operations, string query, string timespan = default(string), string timespan1 = default(string), CancellationToken cancellationToken = default(CancellationToken))
             {
-                using (var _result = await operations.QueryWithHttpMessagesAsync(query, timespan, timespan1, applications, null, cancellationToken).ConfigureAwait(false))
-                {
-                    return _result.Body;
-                }
-            }
-
-            /// <summary>
-            /// Get Analytics query metadata
-            /// </summary>
-            /// <remarks>
-            /// Gets Analytics query schema describing the data model
-            /// </remarks>
-            /// <param name='operations'>
-            /// The operations group for this extension method.
-            /// </param>
-            public static QueryResults GetQuerySchema(this IApplicationInsightsDataClient operations)
-            {
-                return operations.GetQuerySchemaAsync().GetAwaiter().GetResult();
-            }
-
-            /// <summary>
-            /// Get Analytics query metadata
-            /// </summary>
-            /// <remarks>
-            /// Gets Analytics query schema describing the data model
-            /// </remarks>
-            /// <param name='operations'>
-            /// The operations group for this extension method.
-            /// </param>
-            /// <param name='cancellationToken'>
-            /// The cancellation token.
-            /// </param>
-            public static async Task<QueryResults> GetQuerySchemaAsync(this IApplicationInsightsDataClient operations, CancellationToken cancellationToken = default(CancellationToken))
-            {
-                using (var _result = await operations.GetQuerySchemaWithHttpMessagesAsync(null, cancellationToken).ConfigureAwait(false))
+                using (var _result = await operations.QueryWithHttpMessagesAsync(query, timespan, timespan1, null, cancellationToken).ConfigureAwait(false))
                 {
                     return _result.Body;
                 }

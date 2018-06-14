@@ -8,8 +8,6 @@ namespace Microsoft.Azure.OperationalInsights.Models
 {
     using Microsoft.Rest;
     using Newtonsoft.Json;
-    using System.Collections;
-    using System.Collections.Generic;
     using System.Linq;
 
     /// <summary>
@@ -34,13 +32,10 @@ namespace Microsoft.Azure.OperationalInsights.Models
         /// data. This is an ISO8601 time period value.  This timespan is
         /// applied in addition to any that are specified in the query
         /// expression.</param>
-        /// <param name="workspaces">A list of workspaces that are included in
-        /// the query.</param>
-        public QueryBody(string query, System.TimeSpan? timespan = default(System.TimeSpan?), IList<string> workspaces = default(IList<string>))
+        public QueryBody(string query, string timespan = default(string))
         {
             Query = query;
             Timespan = timespan;
-            Workspaces = workspaces;
             CustomInit();
         }
 
@@ -61,13 +56,7 @@ namespace Microsoft.Azure.OperationalInsights.Models
         /// addition to any that are specified in the query expression.
         /// </summary>
         [JsonProperty(PropertyName = "timespan")]
-        public System.TimeSpan? Timespan { get; set; }
-
-        /// <summary>
-        /// Gets or sets a list of workspaces that are included in the query.
-        /// </summary>
-        [JsonProperty(PropertyName = "workspaces")]
-        public IList<string> Workspaces { get; set; }
+        public string Timespan { get; set; }
 
         /// <summary>
         /// Validate the object.
